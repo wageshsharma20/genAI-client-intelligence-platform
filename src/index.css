@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-outfit: 'Outfit', sans-serif;
+  --color-primary: #3B82F6;
+  --color-primary-hover: #2563EB;
+  --color-secondary: #10B981;
+  --color-accent: #F59E0B;
+  --color-muted: #F3F4F6;
+  --color-foreground: #111827;
+  --color-surface: #FFFFFF;
+}
+
+* {
+  font-family: 'Outfit', sans-serif;
+}
+
+body {
+  background-color: #F3F4F6;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove all shadows globally */
+*,
+*::before,
+*::after {
+  box-shadow: none !important;
+}
