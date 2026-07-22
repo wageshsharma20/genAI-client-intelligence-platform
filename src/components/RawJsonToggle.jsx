@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 export default function RawJsonToggle({ rawJson }) {
   const [visible, setVisible] = useState(false);
-
   if (!rawJson) return null;
 
   let formatted = rawJson;
@@ -12,24 +11,19 @@ export default function RawJsonToggle({ rawJson }) {
     else if (cleaned.startsWith('```')) cleaned = cleaned.slice(3);
     if (cleaned.endsWith('```')) cleaned = cleaned.slice(0, -3);
     formatted = JSON.stringify(JSON.parse(cleaned.trim()), null, 2);
-  } catch {
-    // show raw if can't parse
-  }
+  } catch { /* show raw */ }
 
   return (
     <div>
       <button
         onClick={() => setVisible(!visible)}
-        className="text-xs font-bold tracking-wider uppercase text-gray-400 hover:text-[#111827] flex items-center gap-1.5 transition-all duration-200 hover:scale-105"
+        className="text-[11px] font-medium text-[#6B7280] hover:text-[#111827] transition-colors"
       >
-        <svg className={`w-3 h-3 transition-transform duration-200 ${visible ? 'rotate-90' : ''}`} fill="currentColor" viewBox="0 0 20 20">
-          <path d="M6 6L14 10L6 14V6Z" />
-        </svg>
-        {visible ? 'Hide' : 'Show'} Raw JSON
+        {visible ? 'Hide' : 'Show'} raw JSON
       </button>
 
       {visible && (
-        <pre className="mt-3 p-6 bg-[#111827] text-[#10B981] text-xs rounded-lg overflow-auto max-h-96 font-mono leading-relaxed">
+        <pre className="mt-2 p-4 bg-[#111827] text-[#A5F3FC] text-xs rounded-lg overflow-auto max-h-80 font-mono leading-relaxed">
           {formatted}
         </pre>
       )}

@@ -5,9 +5,7 @@ export default function ExportButton({ data, reviewStatuses, editedValues }) {
       review: {
         status: Object.values(reviewStatuses).every(s => s === 'approved') ? 'approved' : 'edited',
         reviewer: 'coach',
-        edited_fields: Object.entries(reviewStatuses)
-          .filter(([, status]) => status === 'edited')
-          .map(([field]) => field),
+        edited_fields: Object.entries(reviewStatuses).filter(([, s]) => s === 'edited').map(([f]) => f),
         reviewer_notes: null,
         reviewed_at: new Date().toISOString(),
       },
@@ -19,7 +17,7 @@ export default function ExportButton({ data, reviewStatuses, editedValues }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `client-intelligence-report-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `client-report-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -27,9 +25,9 @@ export default function ExportButton({ data, reviewStatuses, editedValues }) {
   return (
     <button
       onClick={handleExport}
-      className="h-14 px-8 bg-[#111827] text-white font-bold tracking-tight rounded-md hover:bg-[#1F2937] hover:scale-105 transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-[#111827]"
+      className="px-4 py-2 bg-[#111827] text-white text-sm font-medium rounded-md hover:bg-[#1F2937] transition-colors"
     >
-      Export Reviewed JSON
+      Export JSON
     </button>
   );
 }

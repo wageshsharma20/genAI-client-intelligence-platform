@@ -1,28 +1,28 @@
 import { useState } from 'react';
 
 export default function EvidenceQuote({ evidence }) {
-  const [expanded, setExpanded] = useState(false);
+  const [open, setOpen] = useState(false);
 
   if (!evidence || evidence.length === 0) return null;
 
   return (
-    <div className="mt-3">
+    <div className="mt-2">
       <button
-        onClick={() => setExpanded(!expanded)}
-        className="text-xs font-semibold text-[#3B82F6] hover:text-[#2563EB] flex items-center gap-1.5 tracking-wide uppercase transition-all duration-200"
+        onClick={() => setOpen(!open)}
+        className="text-[11px] font-medium text-[#6B7280] hover:text-[#111827] transition-colors flex items-center gap-1"
       >
-        <svg className={`w-3 h-3 transition-transform duration-200 ${expanded ? 'rotate-90' : ''}`} fill="currentColor" viewBox="0 0 20 20">
-          <path d="M6 6L14 10L6 14V6Z" />
+        <svg className={`w-3 h-3 transition-transform ${open ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
         </svg>
-        {expanded ? 'Hide' : 'Show'} evidence ({evidence.length})
+        {open ? 'Hide' : 'Show'} evidence ({evidence.length})
       </button>
 
-      {expanded && (
-        <div className="mt-2 space-y-2">
+      {open && (
+        <div className="mt-2 space-y-1.5">
           {evidence.map((e, i) => (
-            <div key={i} className="bg-[#F3F4F6] rounded-md p-3 text-xs">
-              <span className="font-bold text-[#111827] uppercase tracking-wider text-[10px]">{e.speaker}</span>
-              <p className="text-gray-600 mt-0.5 italic">"{e.quote}"</p>
+            <div key={i} className="flex gap-2 pl-4 border-l-2 border-[#E5E7EB]">
+              <span className="text-[11px] font-medium text-[#9CA3AF] uppercase shrink-0">{e.speaker}</span>
+              <span className="text-xs text-[#6B7280] italic">"{e.quote}"</span>
             </div>
           ))}
         </div>

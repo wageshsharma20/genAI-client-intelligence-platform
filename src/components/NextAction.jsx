@@ -5,39 +5,33 @@ export default function NextAction({ action, reviewStatus, onReview }) {
   if (!action) return null;
 
   return (
-    <div className="relative bg-[#3B82F6] rounded-lg p-6 overflow-hidden">
-      {/* Decorative geometric shapes */}
-      <div className="absolute top-0 left-0 w-48 h-48 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-full translate-x-1/3 translate-y-1/3" />
-
-      <div className="relative">
-        <h3 className="font-extrabold text-white text-lg tracking-tight flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-            <span className="text-xl">🎯</span>
-          </div>
-          Recommended Next Action
-        </h3>
-
-        <div className="bg-white rounded-lg p-5">
-          <p className="text-base font-bold text-[#111827]">{action.action}</p>
-          <p className="text-sm text-gray-600 mt-2 leading-relaxed">{action.rationale}</p>
-
-          <div className="flex items-center gap-3 mt-3">
-            <SourceBadge sourceType={action.source_type} confidence={action.confidence} />
+    <div className="bg-white border border-[#E5E7EB] rounded-lg">
+      <div className="px-4 py-3 border-b border-[#E5E7EB] flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB]" />
+        <h3 className="text-sm font-semibold text-[#111827]">Recommended next action</h3>
+      </div>
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-[#111827]">{action.action}</p>
+            <p className="text-xs text-[#6B7280] mt-1">{action.rationale}</p>
             {action.linked_to && action.linked_to.length > 0 && (
-              <span className="text-[10px] font-bold tracking-wider uppercase text-gray-400">
-                Linked: {action.linked_to.join(' · ')}
-              </span>
+              <div className="flex items-center gap-1.5 mt-2">
+                <span className="text-[11px] text-[#9CA3AF]">Linked to:</span>
+                {action.linked_to.map((link, i) => (
+                  <span key={i} className="px-1.5 py-0.5 text-[10px] bg-[#F3F4F6] text-[#6B7280] rounded">{link}</span>
+                ))}
+              </div>
             )}
           </div>
-
-          <ReviewControls
-            fieldPath="recommended_next_action"
-            value={action.action}
-            status={reviewStatus}
-            onReview={onReview}
-          />
+          <SourceBadge sourceType={action.source_type} confidence={action.confidence} />
         </div>
+        <ReviewControls
+          fieldPath="recommended_next_action"
+          value={action.action}
+          status={reviewStatus}
+          onReview={onReview}
+        />
       </div>
     </div>
   );

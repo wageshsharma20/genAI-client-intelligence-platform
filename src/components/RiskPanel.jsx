@@ -3,54 +3,45 @@ import EvidenceQuote from './EvidenceQuote';
 import ReviewControls from './ReviewControls';
 
 export default function RiskPanel({ riskFlags, reviewStatuses, onReview }) {
-  if (!riskFlags) return null;
+  if (!riskFlags || riskFlags.length === 0) return null;
+
+  const severityStyle = {
+    high: 'bg-[#DC2626] text-white',
+    medium: 'bg-[#D97706] text-white',
+    low: 'bg-[#D1D5DB] text-[#374151]',
+  };
 
   return (
-    <div className="relative bg-[#EF4444] rounded-lg p-6 overflow-hidden">
-      {/* Decorative geometric shape */}
-      <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-      <div className="absolute bottom-0 left-8 w-24 h-24 bg-white/5 rounded-full translate-y-1/2" />
+    <div className="bg-white border border-[#E5E7EB] rounded-lg">
+      <div className="px-4 py-3 border-b border-[#E5E7EB] flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626]" />
+        <h3 className="text-sm font-semibold text-[#111827]">Risk flags</h3>
+        <span className="text-[11px] text-[#9CA3AF]">({riskFlags.length})</span>
+      </div>
 
-      <div className="relative">
-        <h3 className="font-extrabold text-white text-lg tracking-tight flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-            <span className="text-xl">⚠️</span>
-          </div>
-          Risk / Attention Flags
-        </h3>
-
-        {riskFlags.length === 0 ? (
-          <p className="text-white/80 font-medium italic">No risk signals identified in this transcript.</p>
-        ) : (
-          <div className="space-y-3">
-            {riskFlags.map((flag, i) => (
-              <div key={i} className="bg-white rounded-lg p-5 transition-all duration-200 hover:scale-[1.01]">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-[#111827]">{flag.flag}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className={`text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md ${
-                        flag.severity === 'high' ? 'bg-[#EF4444] text-white' :
-                        flag.severity === 'medium' ? 'bg-[#F59E0B] text-white' :
-                        'bg-[#FEF3C7] text-[#92400E]'
-                      }`}>
-                        {flag.severity}
-                      </span>
-                      <SourceBadge sourceType={flag.source_type} />
-                    </div>
-                  </div>
+      <div className="divide-y divide-[#F3F4F6]">
+        {riskFlags.map((rf, i) => (
+          <div key={i} className="px-4 py-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={`px-1.5 py-0.5 text-[10px] font-medium uppercase rounded ${severityStyle[rf.severity] || severityStyle.low}`}>
+                    {rf.severity}
+                  </span>
+                  <SourceBadge sourceType={rf.source_type} />
                 </div>
-                <EvidenceQuote evidence={flag.evidence} />
-                <ReviewControls
-                  fieldPath={`risk_flags[${i}]`}
-                  value={flag.flag}
-                  status={reviewStatuses?.[`risk_flags[${i}]`]}
-                  onReview={onReview}
-                />
+                <p className="text-sm text-[#111827]">{rf.flag}</p>
               </div>
-            ))}
+            </div>
+            <EvidenceQuote evidence={rf.evidence} />
+            <ReviewControls
+              fieldPath={`risk_flags[${i}]`}
+              value={rf.flag}
+              status={reviewStatuses[`risk_flags[${i}]`]}
+              onReview={onReview}
+            />
           </div>
-        )}
+        ))}
       </div>
     </div>
   );

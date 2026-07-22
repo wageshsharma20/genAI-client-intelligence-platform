@@ -2,79 +2,81 @@ import { useState } from 'react';
 
 export default function ReviewControls({ fieldPath, value, status, onReview }) {
   const [editing, setEditing] = useState(false);
-  const [editValue, setEditValue] = useState(typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value || ''));
+  const [editValue, setEditValue] = useState(value || '');
 
-  const handleApprove = () => onReview(fieldPath, 'approved', null);
-  const handleReject = () => onReview(fieldPath, 'rejected', null);
-  const handleSaveEdit = () => {
+  const handleSave = () => {
     onReview(fieldPath, 'edited', editValue);
     setEditing(false);
   };
 
+  if (status === 'approved') {
+    return (
+      <div className="mt-2 flex items-center gap-1.5">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+        <span className="text-[11px] font-medium text-[#059669]">Approved</span>
+      </div>
+    );
+  }
+
+  if (status === 'rejected') {
+    return (
+      <div className="mt-2 flex items-center gap-1.5">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626]" />
+        <span className="text-[11px] font-medium text-[#DC2626]">Rejected</span>
+      </div>
+    );
+  }
+
+  if (status === 'edited') {
+    return (
+      <div className="mt-2 flex items-center gap-1.5">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#D97706]" />
+        <span className="text-[11px] font-medium text-[#D97706]">Edited</span>
+      </div>
+    );
+  }
+
+  if (editing) {
+    return (
+      <div className="mt-2 space-y-2">
+        <textarea
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          className="w-full p-2 text-xs border border-[#D1D5DB] rounded-md focus:outline-none focus:border-[#2563EB] bg-white resize-none"
+          rows={2}
+        />
+        <div className="flex gap-2">
+          <button onClick={handleSave} className="px-2.5 py-1 text-[11px] font-medium bg-[#2563EB] text-white rounded-md hover:bg-[#1D4ED8] transition-colors">
+            Save
+          </button>
+          <button onClick={() => setEditing(false)} className="px-2.5 py-1 text-[11px] font-medium text-[#6B7280] hover:text-[#111827] transition-colors">
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-3 pt-3 border-t-2 border-[#F3F4F6]">
-      {editing ? (
-        <div className="space-y-3">
-          <textarea
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            className="w-full p-3 text-sm bg-[#F3F4F6] rounded-md border-0 focus:bg-white focus:border-2 focus:border-[#3B82F6] focus:outline-none transition-all duration-200"
-            rows={3}
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={handleSaveEdit}
-              className="h-9 px-4 text-xs font-bold tracking-wide uppercase bg-[#3B82F6] text-white rounded-md hover:bg-[#2563EB] hover:scale-105 transition-all duration-200"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => setEditing(false)}
-              className="h-9 px-4 text-xs font-bold tracking-wide uppercase bg-[#F3F4F6] text-[#111827] rounded-md hover:bg-[#E5E7EB] hover:scale-105 transition-all duration-200"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleApprove}
-            className={`h-8 px-3 text-[10px] font-bold tracking-wider uppercase rounded-md transition-all duration-200 hover:scale-105 ${
-              status === 'approved'
-                ? 'bg-[#10B981] text-white'
-                : 'bg-[#10B981]/10 text-[#10B981] hover:bg-[#10B981] hover:text-white'
-            }`}
-          >
-            ✓ Approve
-          </button>
-          <button
-            onClick={() => setEditing(true)}
-            className={`h-8 px-3 text-[10px] font-bold tracking-wider uppercase rounded-md transition-all duration-200 hover:scale-105 ${
-              status === 'edited'
-                ? 'bg-[#F59E0B] text-white'
-                : 'bg-[#F59E0B]/10 text-[#F59E0B] hover:bg-[#F59E0B] hover:text-white'
-            }`}
-          >
-            ✎ Edit
-          </button>
-          <button
-            onClick={handleReject}
-            className={`h-8 px-3 text-[10px] font-bold tracking-wider uppercase rounded-md transition-all duration-200 hover:scale-105 ${
-              status === 'rejected'
-                ? 'bg-[#EF4444] text-white'
-                : 'bg-[#EF4444]/10 text-[#EF4444] hover:bg-[#EF4444] hover:text-white'
-            }`}
-          >
-            ✕ Reject
-          </button>
-          {status && status !== 'pending' && (
-            <span className="text-[10px] font-bold tracking-wider uppercase text-gray-400 ml-2">
-              {status}
-            </span>
-          )}
-        </div>
-      )}
+    <div className="mt-2 flex items-center gap-1">
+      <button
+        onClick={() => onReview(fieldPath, 'approved')}
+        className="px-2 py-0.5 text-[11px] font-medium text-[#059669] hover:bg-[#ECFDF5] rounded transition-colors"
+      >
+        Approve
+      </button>
+      <button
+        onClick={() => setEditing(true)}
+        className="px-2 py-0.5 text-[11px] font-medium text-[#D97706] hover:bg-[#FFFBEB] rounded transition-colors"
+      >
+        Edit
+      </button>
+      <button
+        onClick={() => onReview(fieldPath, 'rejected')}
+        className="px-2 py-0.5 text-[11px] font-medium text-[#DC2626] hover:bg-[#FEF2F2] rounded transition-colors"
+      >
+        Reject
+      </button>
     </div>
   );
 }

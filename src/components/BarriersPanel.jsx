@@ -3,89 +3,70 @@ import EvidenceQuote from './EvidenceQuote';
 import ReviewControls from './ReviewControls';
 
 export default function BarriersPanel({ barriers, pendingActions, reviewStatuses, onReview }) {
+  const hasBarriers = barriers && barriers.length > 0;
+  const hasActions = pendingActions && pendingActions.length > 0;
+
+  if (!hasBarriers && !hasActions) return null;
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Key Barriers */}
-      <div className="relative bg-[#F59E0B] rounded-lg p-6 overflow-hidden">
-        {/* Decorative shape */}
-        <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full" />
-
-        <div className="relative">
-          <h3 className="font-extrabold text-white text-lg tracking-tight flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <span className="text-lg">🚧</span>
-            </div>
-            Key Barriers
-          </h3>
-
-          {!barriers || barriers.length === 0 ? (
-            <p className="text-white/80 font-medium italic">None identified</p>
-          ) : (
-            <div className="space-y-3">
-              {barriers.map((b, i) => (
-                <div key={i} className="bg-white rounded-lg p-4 transition-all duration-200 hover:scale-[1.01]">
-                  <p className="text-sm font-bold text-[#111827]">{b.barrier}</p>
-                  <div className="mt-2">
-                    <SourceBadge sourceType={b.source_type} />
-                  </div>
-                  <EvidenceQuote evidence={b.evidence} />
-                  <ReviewControls
-                    fieldPath={`key_barriers[${i}]`}
-                    value={b.barrier}
-                    status={reviewStatuses?.[`key_barriers[${i}]`]}
-                    onReview={onReview}
-                  />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Barriers */}
+      {hasBarriers && (
+        <div className="bg-white border border-[#E5E7EB] rounded-lg">
+          <div className="px-4 py-3 border-b border-[#E5E7EB]">
+            <h3 className="text-sm font-semibold text-[#111827]">Key barriers</h3>
+          </div>
+          <div className="divide-y divide-[#F3F4F6]">
+            {barriers.map((b, i) => (
+              <div key={i} className="px-4 py-3">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm text-[#111827]">{b.barrier}</p>
+                  <SourceBadge sourceType={b.source_type} />
                 </div>
-              ))}
-            </div>
-          )}
+                <EvidenceQuote evidence={b.evidence} />
+                <ReviewControls
+                  fieldPath={`key_barriers[${i}]`}
+                  value={b.barrier}
+                  status={reviewStatuses[`key_barriers[${i}]`]}
+                  onReview={onReview}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Pending Actions */}
-      <div className="relative bg-[#111827] rounded-lg p-6 overflow-hidden">
-        {/* Decorative shape */}
-        <div className="absolute -top-6 -left-6 w-24 h-24 bg-white/5 rounded-full" />
-
-        <div className="relative">
-          <h3 className="font-extrabold text-white text-lg tracking-tight flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <span className="text-lg">📋</span>
-            </div>
-            Pending Actions
-          </h3>
-
-          {!pendingActions || pendingActions.length === 0 ? (
-            <p className="text-white/60 font-medium italic">None identified</p>
-          ) : (
-            <div className="space-y-3">
-              {pendingActions.map((a, i) => (
-                <div key={i} className="bg-white rounded-lg p-4 transition-all duration-200 hover:scale-[1.01]">
-                  <p className="text-sm font-bold text-[#111827]">{a.action}</p>
-                  <div className="flex items-center gap-3 mt-2">
-                    <span className="text-[10px] font-bold tracking-wider uppercase text-gray-500">
-                      Owner: <span className="text-[#111827] capitalize">{a.owner}</span>
-                    </span>
-                    {a.due && (
-                      <span className="text-[10px] font-bold tracking-wider uppercase text-gray-500">
-                        Due: <span className="text-[#111827]">{a.due}</span>
-                      </span>
-                    )}
-                    <SourceBadge sourceType={a.source_type} />
+      {hasActions && (
+        <div className="bg-white border border-[#E5E7EB] rounded-lg">
+          <div className="px-4 py-3 border-b border-[#E5E7EB]">
+            <h3 className="text-sm font-semibold text-[#111827]">Pending actions</h3>
+          </div>
+          <div className="divide-y divide-[#F3F4F6]">
+            {pendingActions.map((a, i) => (
+              <div key={i} className="px-4 py-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-[#111827]">{a.action}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[11px] text-[#9CA3AF]">Owner: {a.owner}</span>
+                      {a.due && <span className="text-[11px] text-[#9CA3AF]">Due: {a.due}</span>}
+                    </div>
                   </div>
-                  <EvidenceQuote evidence={a.evidence} />
-                  <ReviewControls
-                    fieldPath={`pending_actions[${i}]`}
-                    value={a.action}
-                    status={reviewStatuses?.[`pending_actions[${i}]`]}
-                    onReview={onReview}
-                  />
+                  <SourceBadge sourceType={a.source_type} />
                 </div>
-              ))}
-            </div>
-          )}
+                <EvidenceQuote evidence={a.evidence} />
+                <ReviewControls
+                  fieldPath={`pending_actions[${i}]`}
+                  value={a.action}
+                  status={reviewStatuses[`pending_actions[${i}]`]}
+                  onReview={onReview}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
